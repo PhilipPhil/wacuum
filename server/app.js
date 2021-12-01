@@ -13,6 +13,7 @@ var config = require('./config');
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var commentRouter = require('./routes/commentRouter');
+var urlRouter = require('./routes/urlRouter');
 
 const mongoose = require("mongoose");
 
@@ -54,6 +55,7 @@ app.use(passport.initialize());
 
 app.use("/api-users", usersRouter);
 app.use('/api-comments', commentRouter);
+app.use('/api-url',urlRouter)
 
 app.use("/index", indexRouter);
 
