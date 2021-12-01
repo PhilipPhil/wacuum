@@ -13,10 +13,16 @@ urlRouter.use(bodyParser.json());
 urlRouter.route('/')
     // .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get((req, res, next) => {
-        Url.findOne(req.body)
+        if(!req.body.urlname) {
+            err = new Error('No url found');
+            err.status = 404;
+            return next(err);
+        } else {
+            var requestUrlName = {urlname : req.body.urlname}
+            Url.findOne(requestUrlName)
             .then((url) => {
                 if (url == null) { 
-                    Url.create(req.body)
+                    Url.create(requestUrlName)
                     .then((url) => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
@@ -25,7 +31,7 @@ urlRouter.route('/')
                     .catch((err) => next(err));
                 } else {
                     // we will need to populate this with author and comments also
-                    Url.find(req.body) 
+                    Url.find(requestUrlName) 
                     .then((url) => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
@@ -33,8 +39,9 @@ urlRouter.route('/')
                     }, (err) => next(err))
                     .catch((err) => next(err));
                 }
-            })
+            }, (err) => next(err))
             .catch((err) => next(err));
+        }
     })
 
 module.exports = urlRouter;
