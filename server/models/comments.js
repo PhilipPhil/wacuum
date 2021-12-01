@@ -3,17 +3,17 @@ const Schema = mongoose.Schema;
 
 var commentsSchema = new Schema({
     url: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'url'
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     comment: {
         type: String,
         default: '',
         required: true
-    },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
     }
 }, {
     timestamps: true

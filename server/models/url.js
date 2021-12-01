@@ -2,18 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var urlSchema = new Schema({
-    url: {
+    urlname: {
         type: String,
         required: true
     },
     comment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
-    }],
-    likes : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'likes'
-    }
+    }]
 });
 
 var Url = mongoose.model('url', urlSchema);
