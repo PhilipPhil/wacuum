@@ -12,7 +12,6 @@ var config = require('./config');
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var deal2Router = require("./routes/deal2Router");
 var commentRouter = require('./routes/commentRouter');
 
 const mongoose = require("mongoose");
@@ -57,7 +56,6 @@ app.use("/api-users", usersRouter);
 app.use('/api-comments', commentRouter);
 
 app.use("/index", indexRouter);
-app.use("/api-deals2", deal2Router);
 
 
 // app.use(express.static(path.join(__dirname, "public")));

@@ -1,6 +1,14 @@
+import user from 'user'
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+var urlSchema = new Schema({
+    url: {
+        type: String,
+        required: true
+    },
+    comment: [commentsSchema],
+});
 
 var commentsSchema = new Schema({
     url: {
@@ -12,14 +20,13 @@ var commentsSchema = new Schema({
         default: '',
         required: true
     },
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    author: {user}
 }, {
     timestamps: true
 });
 
-// var Comments = mongoose.model('comments', commentsSchema);
 
-// module.exports = Comments;
+
+var Url = mongoose.model('url', urlSchema);
+
+module.exports = Url;
