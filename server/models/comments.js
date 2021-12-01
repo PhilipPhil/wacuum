@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
 var commentsSchema = new Schema({
     url: {
         type: String,
@@ -20,6 +19,6 @@ var commentsSchema = new Schema({
     timestamps: true
 });
 
-// var Comments = mongoose.model('comments', commentsSchema);
+var Comments = mongoose.model('comments', commentsSchema);
 
-// module.exports = Comments;
+module.exports = Comments;
