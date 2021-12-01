@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 var urlSchema = new Schema({
     urlname: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     comment: [{
         type: mongoose.Schema.Types.ObjectId,

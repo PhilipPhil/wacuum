@@ -13,16 +13,28 @@ urlRouter.use(bodyParser.json());
 urlRouter.route('/')
     // .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get((req, res, next) => {
-        Url.create(req.body)
-        .then((deals) => {
-            console.log('Deal Created ', deals);
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(deals);
-        }, (err) => next(err))
-        .catch((err) => next(err));
-
-
+        Url.findOne(req.body)
+            .then((url) => {
+                if (url == null) { 
+                    Url.create(req.body)
+                    .then((url) => {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(url);
+                    }, (err) => next(err))
+                    .catch((err) => next(err));
+                } else {
+                    // we will need to populate this with author and comments also
+                    Url.find(req.body) 
+                    .then((url) => {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(url);
+                    }, (err) => next(err))
+                    .catch((err) => next(err));
+                }
+            })
+            .catch((err) => next(err));
     })
 
 module.exports = urlRouter;
