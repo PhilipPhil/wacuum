@@ -10,6 +10,10 @@ var urlSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     }],
+    likes : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'likes'
+    }
 });
 
 var Url = mongoose.model('url', urlSchema);
