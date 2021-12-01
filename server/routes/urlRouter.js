@@ -31,7 +31,7 @@ urlRouter.route('/')
                     .catch((err) => next(err));
                 } else {
                     // we will need to populate this with author and comments also
-                    Url.find(requestUrlName) 
+                    Url.findOne(requestUrlName) 
                     .then((url) => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');

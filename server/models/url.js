@@ -7,7 +7,7 @@ var urlSchema = new Schema({
         required: true,
         unique: true
     },
-    comment: [{
+    comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     }]

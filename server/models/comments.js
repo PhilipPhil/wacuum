@@ -14,6 +14,14 @@ var commentsSchema = new Schema({
         type: String,
         default: '',
         required: true
+    },
+    like: {
+        type: Boolean,
+        required: true
+    },
+    dislike: {
+        type: Boolean,
+        required: true
     }
 }, {
     timestamps: true
