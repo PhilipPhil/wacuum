@@ -18,10 +18,6 @@ var commentsSchema = new Schema({
     like: {
         type: Boolean,
         required: true
-    },
-    dislike: {
-        type: Boolean,
-        required: true
     }
 }, {
     timestamps: true

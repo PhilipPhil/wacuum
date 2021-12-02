@@ -16,52 +16,44 @@ commentRouter.route('/')
         res.statusCode = 403;
         res.end('PUT operation not supported on /comments');
     })
+    .post(authenticate.verifyUser, (req, res, next) => {
+        if (!req.body) {
+            err = new Error('Malformed request');
+            err.status = 400;
+            return next(err);
+        } else {
+            var newComment = {
+                author: req.user._id,
+                comment: req.body.comment,
+                url: mongoose.Types.ObjectId(req.body.url_id),
+                like: req.body.like,
+            }
+            Url.findById(newComment.url)
+                .then((url) => {
+                    Comments.create(newComment)
+                        .then((comment) => { // 2
+                            url.comments.push(comment)
+                            Url.findByIdAndUpdate(url._id, { $set: url }, { new: true }) // 3
+                                .then((url) => {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(comment);
+                                }, (err) => next(err))
+                                .catch((err) => next(err));
+                        }, (err) => next(err))
+                        .catch((err) => next(err));
 
-.post(authenticate.verifyUser, (req, res, next) => {
-    if(!req.body ) {
-        err = new Error('Malformed request');
-        err.status = 400;
-        return next(err);
-    } else {
-    var newComment = {
-        author: req.user._id, 
-        comment : req.body.comment, 
-        url : mongoose.Types.ObjectId(req.body.url_id), 
-        like: req.body.like,
-        dislike: req.body.dislike
-    }
-    Comments.create(newComment)
-    .then((comment) => {
-        Url.findById(comment.url)
-        .then( (url) => {
-            console.log("---------------------------")
-            console.log(url)
-            console.log("---------------------------")
-            url.comments.push(comment)
-            Url.findByIdAndUpdate(url._id, {$set : url}, { new: true }).
-            then( (url) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(comment);
-
-            }, (err) => next(err))
-            .catch((err) => next(err));
-
-        }, (err) => next(err))
-        .catch((err) => next(err));
-
-    }, (err) => next(err))
-    .catch((err) => next(err));
-
-    }
-})
-.put(authenticate.verifyUser, (req, res, next) => {
-    // update comment
-})
-.delete(authenticate.verifyUser, (req, res, next) => {
-    // removes specific comment with id
-    // remove comment from url
-});
+                }, (err) => next(err))
+                .catch((err) => next(err));
+        }
+    })
+    .put(authenticate.verifyUser, (req, res, next) => {
+        // update comment
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        // removes specific comment with id
+        // remove comment from url
+    });
 
 // commentRouter.route('/')
 //     // .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
