@@ -12,9 +12,10 @@ const commentRouter = express.Router();
 commentRouter.use(bodyParser.json());
 
 commentRouter.route('/')
+// .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(authenticate.verifyUser, (req, res, next) => {
         res.statusCode = 403;
-        res.end('PUT operation not supported on /comments');
+        res.end('GET operation not supported on /comments');
     })
     .post(authenticate.verifyUser, (req, res, next) => {
         if (!req.body || req.body.comment == null || req.body.url_id == null || req.body.like == null) {
@@ -48,11 +49,79 @@ commentRouter.route('/')
         }
     })
     .put(authenticate.verifyUser, (req, res, next) => {
-        // update comment
+        res.statusCode = 403;
+        res.end('PUT operation not supported on /comments');
     })
     .delete(authenticate.verifyUser, (req, res, next) => {
-        // removes specific comment with id
-        // remove comment from url
+        res.statusCode = 403;
+        res.end('DELETE operation not supported on /comments');
+    });
+
+commentRouter.route('/:commentId')
+// .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+    .get((req, res, next) => {
+        res.statusCode = 403;
+        res.end('GET operation not supported on /comments/' + req.params.commentId);
+    })
+    .post(authenticate.verifyUser, (req, res, next) => {
+        res.statusCode = 403;
+        res.end('POST operation not supported on /comments/' + req.params.commentId);
+    })
+    .put(authenticate.verifyUser, (req, res, next) => {
+        Comments.findById(req.params.commentId)
+            .then((comment) => {
+                if (comment != null) {
+                    if (!comment.author.equals(req.user._id)) {
+                        var err = new Error('Not authorized to update this comment');
+                        err.status = 403;
+                        return next(err);
+                    }
+                    req.body.author = req.user._id;
+                    Comments.findByIdAndUpdate(req.params.commentId, {
+                        $set: req.body
+                    }, { new: true })
+                        .then((comment) => {
+                            Comments.findById(comment._id)
+                                .populate('author')
+                                .then((comment) => {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(comment);
+                                })
+                        }, (err) => next(err));
+                }
+                else {
+                    err = new Error('comment ' + req.params.commentId + ' not found');
+                    err.status = 404;
+                    return next(err);
+                }
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        Comments.findById(req.params.commentId)
+            .then((comment) => {
+                if (comment != null) {
+                    if (!comment.author.equals(req.user._id)) {
+                        var err = new Error('Not authorized to delete this comment');
+                        err.status = 403;
+                        return next(err);
+                    }
+                    Comments.findByIdAndRemove(req.params.commentId)
+                        .then((resp) => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(resp);
+                        }, (err) => next(err))
+                        .catch((err) => next(err));
+                }
+                else {
+                    err = new Error('comment ' + req.params.commentId + ' not found');
+                    err.status = 404;
+                    return next(err);
+                }
+            }, (err) => next(err))
+            .catch((err) => next(err));
     });
 
 // commentRouter.route('/')
