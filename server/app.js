@@ -53,9 +53,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 
-app.use("/api-users", usersRouter);
-app.use('/api-comments', commentRouter);
-app.use('/api-url',urlRouter)
+app.use("/users", usersRouter);
+app.use('/comments', commentRouter);
+app.use('/url',urlRouter)
 
 app.use("/index", indexRouter);
 

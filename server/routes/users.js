@@ -78,7 +78,7 @@ router.post('/login', (req, res, next) => {
   }) (req, res, next);
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', (req, res, next) => {
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');
@@ -91,7 +91,7 @@ router.get('/logout', (req, res) => {
   }
 });
 
-router.get('/checkJWTtoken', cors.corsWithOptions, (req, res) => {
+router.get('/checkJWTtoken', (req, res) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
     if (err)
       return next(err);
