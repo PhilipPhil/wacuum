@@ -31,7 +31,15 @@ urlRouter.route('/')
                     .catch((err) => next(err));
                 } else {
                     // we will need to populate this with author and comments also
-                    Url.findOne(requestUrlName) 
+                    Url.findOne(requestUrlName)
+                    .populate('comments')
+                    .populate({ 
+                        path: 'comments',
+                        populate: {
+                          path: 'author',
+                          model: 'User'
+                        } 
+                     })
                     .then((url) => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');

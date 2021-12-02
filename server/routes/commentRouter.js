@@ -17,7 +17,7 @@ commentRouter.route('/')
         res.end('PUT operation not supported on /comments');
     })
     .post(authenticate.verifyUser, (req, res, next) => {
-        if (!req.body) {
+        if (!req.body || req.body.comment == null || req.body.url_id == null || req.body.like == null) {
             err = new Error('Malformed request');
             err.status = 400;
             return next(err);
@@ -31,9 +31,9 @@ commentRouter.route('/')
             Url.findById(newComment.url)
                 .then((url) => {
                     Comments.create(newComment)
-                        .then((comment) => { // 2
+                        .then((comment) => {
                             url.comments.push(comment)
-                            Url.findByIdAndUpdate(url._id, { $set: url }, { new: true }) // 3
+                            Url.findByIdAndUpdate(url._id, { $set: url }, { new: true })
                                 .then((url) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
